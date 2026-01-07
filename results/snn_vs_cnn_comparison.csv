@@ -1,0 +1,6 @@
+Metric,SNN,CNN,Winner
+Sensitivity,0.8085,0.8085,Tie
+Specificity,0.2756,0.7759,CNN
+Macro F1,0.2282,0.4742,CNN
+Accuracy,0.2817,0.7762,CNN
+Pr Auc,0.1145,0.2764,CNN

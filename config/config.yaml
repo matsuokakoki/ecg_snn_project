@@ -1,0 +1,58 @@
+# ECG-SNN Experiment Configuration
+experiment:
+  name: "ecg_snn_graded_stdp"
+  seed: 42
+  device: "cpu"
+
+data:
+  database: "mitdb"
+  lead: 0  # Lead II (MLII)
+  window_size: 360  # ~1 second at 360Hz
+  train_records: ['101', '106', '108', '109', '112', '114', '115', '116', '118', '119', '122', '124', '201', '203', '205', '207', '208', '209', '215', '220', '223', '230']
+  test_records: ['100', '103', '105', '111', '113', '117', '121', '123', '200', '202', '210', '212', '213', '214', '219', '221', '222', '228', '231', '232', '233', '234']
+  # Patient-split: train and test records are from different patients
+
+encoding:
+  type: "graded_delta"
+  num_levels: 3
+  threshold_factor: 0.5  # θ = k * σ
+
+model:
+  # SNN parameters
+  beta: 0.9  # membrane decay
+  num_steps: 50  # time steps for temporal processing
+  surrogate_slope: 25
+  
+  # Architecture
+  conv1_channels: 8
+  conv2_channels: 16
+  kernel_size: 5
+  stride: 2
+
+training:
+  epochs: 30
+  batch_size: 64
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  grad_clip: 1.0
+  firing_rate_reg: 0.001  # regularization for sparse firing
+  early_stopping_patience: 5
+
+evaluation:
+  k_folds: 5
+  metrics: ["accuracy", "macro_f1", "pr_auc", "sensitivity", "specificity"]
+
+stdp:
+  enabled: true
+  tau_pre: 20.0
+  tau_post: 20.0
+  lr_plus: 0.01
+  lr_minus: 0.012
+  weight_min: -1.0
+  weight_max: 1.0
+  adaptation_steps: 100
+
+noise:
+  gaussian_levels: [0.0, 0.1, 0.2, 0.3]
+  baseline_drift_amplitude: [0.0, 0.1, 0.2]
+  baseline_drift_frequency: 0.5  # Hz
