@@ -1,5 +1,6 @@
 # ECG anomaly detection with a spiking neural network — research prototype
 
+An exploratory comparison of spiking-neural-network and CNN models for ECG anomaly detection using MIT-BIH beats. The repository includes historical Fold 0 results and a corrected patient-aware evaluation protocol that has not yet been run; the historical results are not independent-test performance.
 MIT-BIH ECG beatsを用い、時間軸SNNとCNNベースラインを比較する研究試作です。Graded Delta encoding、クラス不均衡、閾値選択、計算量を検討しました。
 
 **Status (2026-09-23): historical experimentはFold 0のみ。目標の同時達成は確認できません。5-fold全体、独立testによる再評価、STDP/ノイズ/アブレーションの実証は未完了です。評価分割コードを修正しましたが、修正後のモデルは再学習・再評価していません。**  
