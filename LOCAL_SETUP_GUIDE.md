@@ -1,76 +1,41 @@
-# ローカル環境構築・実行ガイド
+# Local setup (research prototype)
 
-本ガイドは、Manus AIで作成したECG異常検知プロジェクトをローカル環境（VSCode）で実行し、最終目標を達成するための手順をまとめたものです。
+This guide runs from the repository root. The small protocol tests do not need the ECG dataset or GPU. Training is expensive and has **not** been run with the corrected protocol in this repository.
 
-## 1. 環境構築
+## Python environment
 
-### 1.1. 仮想環境の作成
-ターミナルで以下のコマンドを実行してください。
+Python 3.10+ を推奨します。歴史的な実験環境の依存バージョンは保存されていないため、以下は再現のための**導入例**であり、当時と同一の出力を保証しません。
+
+PowerShell:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install torch snntorch wfdb pandas numpy matplotlib seaborn pyyaml scikit-learn scipy tqdm
+python -m unittest discover -s tests
+python -m compileall -q src tests
+```
+
+macOS/Linux:
 
 ```bash
-# プロジェクトディレクトリへ移動
-cd ecg_snn_project
-
-# 仮想環境の作成
-python -m venv venv
-
-# 仮想環境の有効化
-# Windows:
-.\venv\Scripts\activate
-# Mac/Linux:
-source venv/bin/activate
-
-# 依存ライブラリのインストール
-pip install torch torchvision torchaudio snntorch wfdb pandas numpy matplotlib seaborn pyyaml scikit-learn tqdm
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install torch snntorch wfdb pandas numpy matplotlib seaborn pyyaml scikit-learn scipy tqdm
+python -m unittest discover -s tests
+python -m compileall -q src tests
 ```
 
-### 1.2. データセットの取得
-`src/data_loader.py` を実行するか、以下のPythonコードでMIT-BIHデータをダウンロードしてください。
+各パッケージの固定バージョンは未確定です。GPU版PyTorchが必要な場合は利用環境に合わせて公式の導入手順を確認してください。
 
-```python
-import wfdb
-import os
+## Data
 
-data_dir = 'data/mitdb'
-os.makedirs(data_dir, exist_ok=True)
-wfdb.dl_database('mitdb', data_dir)
+[MIT-BIH Arrhythmia Database](https://physionet.org/content/mitdb/1.0.0/)の使用条件を確認し、必要な`.hea`、`.dat`、`.atr`を`data/mitdb/`へ配置してください。データはこのrepoには含めません。`wfdb.dl_database('mitdb', 'data/mitdb')`でも取得できます。ダウンロードはネットワークと容量を要します。
+
+## Corrected protocol
+
+```bash
+python src/train_corrected_protocol.py
 ```
 
-## 2. 実行ステップ（目標達成に向けて）
-
-### ステップ1: 評価の確定（5-fold完遂）
-`src/train_final_optimized.py` を実行して、5-foldすべての学習と評価を行います。
-- **目標**: Sens≥0.80, Spec≥0.90, Macro F1≥0.75
-- **ヒント**: `find_optimal_threshold_aggressive` の `target_sensitivity` を調整してください。
-
-### ステップ2: CNNベースラインの正常化
-`src/train_cnn_improved.py` を実行します。
-- **目標**: Accuracy ≥ 0.90
-- **ヒント**: 学習率（LR）を `1e-4` から `1e-3` の間で調整し、BatchNormが効いているか確認してください。
-
-### ステップ3: SOPs/FLOPs ≤ 1 の達成
-`src/sops_detailed_analysis.py` を実行します。
-- **目標**: SOPs / FLOPs ≤ 1
-- **ヒント**: Layer1の発火率が高い場合は、`config/config.yaml` でLIFの `threshold` を上げるか、`GradedDeltaEncoder` の `threshold_factor` を上げてください。
-
-### ステップ4: SNNの価値の数値化（STDPまたはノイズ）
-- **STDP**: `src/stdp_adaptation_v2.py` を実行し、少数の正常拍（few-shot）での適応曲線を確認してください。
-- **ノイズ**: `src/noise_robustness.py` を実行し、ベースライン変動下での性能劣化をCNNと比較してください。
-
-## 3. 主要ファイルの役割
-
-| ファイル | 役割 |
-| :--- | :--- |
-| `src/snn_model_v2.py` | 時間軸SNNのモデル定義。SOPs計測用に修正済み。 |
-| `src/data_loader.py` | 患者分割・層化k-fold・Graded Deltaエンコーディング。 |
-| `src/train_final_optimized.py` | SNNのメイン学習スクリプト。閾値最適化ロジック搭載。 |
-| `src/evaluate_trained_models.py` | 学習済みモデルの厳密な評価と平均±stdの算出。 |
-| `src/sops_detailed_analysis.py` | 層別SOPs実測とFLOPs比較。 |
-| `config/config.yaml` | 全体のハイパーパラメータ管理。 |
-
-## 4. 成功のためのアドバイス
-
-- **不均衡対策**: MIT-BIHは非常に偏っています。`WeightedRandomSampler` の重みを `[1.0, 10.0]` 程度まで上げるとSensitivityが改善しやすくなります。
-- **SOPs削減**: SNNの消費電力を下げるには、スパイクを「疎（Sparse）」にすることが鍵です。LIFの閾値を少しずつ上げて、精度を維持できる限界を探ってください。
-
-研究の成功を心より応援しております！
+このスクリプトは201/202が同一被験者である事実を考慮して202をtestから除外し、train・validation・独立testを分離します。SNNとCNNを学習するため時間がかかります。旧`src/train_final_optimized.py`はFold 0の歴史的スクリプトであり、5-fold完遂や独立testの結果は生成しません。結果の読み方は[README.md](README.md)と[results/README.md](results/README.md)を先に確認してください。

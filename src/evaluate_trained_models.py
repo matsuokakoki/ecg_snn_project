@@ -2,7 +2,7 @@
 Evaluate the trained models and generate comprehensive results.
 """
 import sys
-sys.path.insert(0, '/home/ubuntu/ecg_snn_project/src')
+sys.path.insert(0, './src')
 
 import os
 import torch
@@ -18,12 +18,12 @@ from train_final_optimized import ImprovedCNN, evaluate_with_threshold, find_opt
 def evaluate_model(model_type='snn', fold_idx=0):
     """Evaluate a trained model."""
     
-    config = load_config('/home/ubuntu/ecg_snn_project/config/config.yaml')
+    config = load_config('./config/config.yaml')
     set_seed(42)
     device = torch.device(config['experiment']['device'])
     
     # Load data
-    data_dir = '/home/ubuntu/ecg_snn_project/data/mitdb'
+    data_dir = './data/mitdb'
     all_records = config['data']['train_records'] + config['data']['test_records']
     existing_records = [r for r in all_records if os.path.exists(os.path.join(data_dir, f"{r}.hea"))]
     
@@ -39,7 +39,7 @@ def evaluate_model(model_type='snn', fold_idx=0):
     val_loader = DataLoader(val_subset, batch_size=64, num_workers=0)
     
     # Load model
-    model_path = f'/home/ubuntu/ecg_snn_project/models/{model_type}_optimized_fold{fold_idx}.pth'
+    model_path = f'./models/{model_type}_optimized_fold{fold_idx}.pth'
     
     if model_type == 'snn':
         model = TemporalCSNN(input_size=360).to(device)

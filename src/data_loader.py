@@ -1,5 +1,5 @@
 """
-MIT-BIH Arrhythmia Database loader with patient-split and stratified k-fold.
+MIT-BIH Arrhythmia Database loader and historical record-level k-fold helper.
 """
 import os
 import numpy as np
@@ -69,7 +69,7 @@ class GradedDeltaEncoder:
 
 class MITBIHDataset(Dataset):
     """
-    MIT-BIH Arrhythmia Database Dataset with patient-split support.
+    MIT-BIH Arrhythmia Database Dataset that tracks source record IDs.
     """
     
     # Normal beat symbols
@@ -162,8 +162,9 @@ class MITBIHDataset(Dataset):
 
 class StratifiedPatientKFold:
     """
-    Stratified K-Fold cross-validation with patient-level splitting.
-    Ensures no patient appears in both train and test sets.
+    Historical record-level k-fold helper; name retained for compatibility.
+    It does NOT ensure subject-level separation: records 201 and 202 are one
+    subject. Use evaluation_protocol.py for the corrected protocol.
     """
     
     def __init__(self, n_splits: int = 5, shuffle: bool = True, random_state: int = 42):
@@ -181,7 +182,7 @@ class StratifiedPatientKFold:
         Yields:
             train_indices, test_indices for each fold
         """
-        # Get unique patients and their dominant label
+        # Group by record, not verified subject identity.
         unique_records = np.unique(dataset.record_ids)
         record_labels = []
         
@@ -193,7 +194,7 @@ class StratifiedPatientKFold:
         
         record_labels = np.array(record_labels)
         
-        # Stratified split at patient level
+        # Historical record-level stratification.
         skf = StratifiedKFold(n_splits=self.n_splits, shuffle=self.shuffle, 
                              random_state=self.random_state)
         
@@ -237,7 +238,7 @@ def download_mitdb(data_dir: str, records: list = None):
 
 if __name__ == "__main__":
     # Test the data loader
-    data_dir = "/home/ubuntu/ecg_snn_project/data/mitdb"
+    data_dir = "./data/mitdb"
     
     # Download a few records for testing
     download_mitdb(data_dir, records=['100', '101', '103', '105', '106', '108'])

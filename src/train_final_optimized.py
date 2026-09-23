@@ -6,7 +6,7 @@ Final optimized training with:
 Goal: Sensitivity >= 0.80, Specificity >= 0.90, Macro F1 >= 0.75
 """
 import sys
-sys.path.insert(0, '/home/ubuntu/ecg_snn_project/src')
+sys.path.insert(0, './src')
 
 import os
 import torch
@@ -245,12 +245,12 @@ def evaluate_with_threshold(model, loader, device, threshold=0.5):
 def train_optimized(model_type='snn', fold_idx=0):
     """Train with all optimizations."""
     
-    config = load_config('/home/ubuntu/ecg_snn_project/config/config.yaml')
+    config = load_config('./config/config.yaml')
     set_seed(42 + fold_idx)
     device = torch.device(config['experiment']['device'])
     
     # Load data
-    data_dir = '/home/ubuntu/ecg_snn_project/data/mitdb'
+    data_dir = './data/mitdb'
     all_records = config['data']['train_records'] + config['data']['test_records']
     existing_records = [r for r in all_records if os.path.exists(os.path.join(data_dir, f"{r}.hea"))]
     
@@ -305,7 +305,7 @@ def train_optimized(model_type='snn', fold_idx=0):
             best_val_sens = val_metrics['sensitivity']
             patience_counter = 0
             torch.save(model.state_dict(), 
-                      f'/home/ubuntu/ecg_snn_project/models/{model_type}_optimized_fold{fold_idx}.pth')
+                      f'./models/{model_type}_optimized_fold{fold_idx}.pth')
         else:
             patience_counter += 1
         
@@ -315,7 +315,7 @@ def train_optimized(model_type='snn', fold_idx=0):
     
     # Load best model
     model.load_state_dict(torch.load(
-        f'/home/ubuntu/ecg_snn_project/models/{model_type}_optimized_fold{fold_idx}.pth',
+        f'./models/{model_type}_optimized_fold{fold_idx}.pth',
         weights_only=True
     ))
     

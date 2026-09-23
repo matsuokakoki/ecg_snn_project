@@ -1,3 +1,5 @@
+> **HISTORICAL / INCONSISTENT (2026-09-23):** この文書のFold 0 SNN数値は `core_evaluation_summary.csv` と一致しません。実行ログとcheckpointの対応を確認できないため、現在の性能主張には使わないでください。5-fold・STDP・SOPs等の実施状況も [results/README.md](README.md) とルートREADMEを優先してください。元の記述は履歴として残します。
+
 # 研究報告書：スパイク時間情報を活用したウェアラブルECG異常検知アルゴリズム
 
 **作成日:** 2026年1月7日

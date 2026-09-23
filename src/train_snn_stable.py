@@ -2,7 +2,7 @@
 Stable SNN training with conservative settings.
 """
 import sys
-sys.path.insert(0, '/home/ubuntu/ecg_snn_project/src')
+sys.path.insert(0, './src')
 
 import os
 import torch
@@ -71,12 +71,12 @@ def evaluate_with_threshold(model, loader, device, threshold=0.5):
 def train_snn_stable():
     """Train SNN with stable settings."""
     
-    config = load_config('/home/ubuntu/ecg_snn_project/config/config.yaml')
+    config = load_config('./config/config.yaml')
     set_seed(42)
     device = torch.device(config['experiment']['device'])
     
     # Load data
-    data_dir = '/home/ubuntu/ecg_snn_project/data/mitdb'
+    data_dir = './data/mitdb'
     all_records = config['data']['train_records'] + config['data']['test_records']
     existing_records = [r for r in all_records if os.path.exists(os.path.join(data_dir, f"{r}.hea"))]
     
@@ -139,7 +139,7 @@ def train_snn_stable():
             best_val_f1 = val_metrics['macro_f1']
             patience_counter = 0
             torch.save(model.state_dict(), 
-                      '/home/ubuntu/ecg_snn_project/models/snn_stable_fold0.pth')
+                      './models/snn_stable_fold0.pth')
         else:
             patience_counter += 1
         
@@ -149,7 +149,7 @@ def train_snn_stable():
     
     # Load best model
     model.load_state_dict(torch.load(
-        '/home/ubuntu/ecg_snn_project/models/snn_stable_fold0.pth',
+        './models/snn_stable_fold0.pth',
         weights_only=True
     ))
     

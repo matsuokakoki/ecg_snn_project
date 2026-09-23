@@ -6,7 +6,7 @@ Analyzes the tradeoff between spike resolution (L levels) and:
 - Hardware complexity
 """
 import sys
-sys.path.insert(0, '/home/ubuntu/ecg_snn_project/src')
+sys.path.insert(0, './src')
 
 import os
 import torch
@@ -23,10 +23,10 @@ from snn_model_v2 import TemporalCSNN
 
 def analyze_encoding_levels():
     """Analyze the effect of different graded spike levels."""
-    config = load_config('/home/ubuntu/ecg_snn_project/config/config.yaml')
+    config = load_config('./config/config.yaml')
     set_seed(config['experiment']['seed'])
     
-    data_dir = '/home/ubuntu/ecg_snn_project/data/mitdb'
+    data_dir = './data/mitdb'
     all_records = config['data']['train_records'] + config['data']['test_records']
     existing_records = [r for r in all_records if os.path.exists(os.path.join(data_dir, f"{r}.hea"))]
     
@@ -197,7 +197,7 @@ def create_summary_visualization(encoding_results, hw_results):
     axes[1, 1].set_title('Estimated Battery Life (100mAh)')
     
     plt.tight_layout()
-    plt.savefig('/home/ubuntu/ecg_snn_project/results/graded_tradeoff.png', dpi=150)
+    plt.savefig('./results/graded_tradeoff.png', dpi=150)
     print("\nSaved to results/graded_tradeoff.png")
 
 

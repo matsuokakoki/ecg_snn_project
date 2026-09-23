@@ -10,7 +10,8 @@ data:
   window_size: 360  # ~1 second at 360Hz
   train_records: ['101', '106', '108', '109', '112', '114', '115', '116', '118', '119', '122', '124', '201', '203', '205', '207', '208', '209', '215', '220', '223', '230']
   test_records: ['100', '103', '105', '111', '113', '117', '121', '123', '200', '202', '210', '212', '213', '214', '219', '221', '222', '228', '231', '232', '233', '234']
-  # Patient-split: train and test records are from different patients
+  # Historical record split; 201 and 202 are one subject across partitions.
+  # The corrected pipeline excludes 202 from independent test evaluation.
 
 encoding:
   type: "graded_delta"

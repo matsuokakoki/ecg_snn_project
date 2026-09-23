@@ -2,7 +2,7 @@
 Training script for Temporal 1D-CSNN with proper regularization and evaluation.
 """
 import sys
-sys.path.insert(0, '/home/ubuntu/ecg_snn_project/src')
+sys.path.insert(0, './src')
 
 import os
 import torch
@@ -127,13 +127,13 @@ def train_with_kfold(config: dict, model_class, model_name: str):
     
     # Logger
     logger = ExperimentLogger(
-        '/home/ubuntu/ecg_snn_project/logs',
+        './logs',
         f"{config['experiment']['name']}_{model_name}"
     )
     logger.log_config(config)
     
     # Download data if needed
-    data_dir = '/home/ubuntu/ecg_snn_project/data/mitdb'
+    data_dir = './data/mitdb'
     all_records = config['data']['train_records'] + config['data']['test_records']
     
     # Check which records exist
@@ -269,7 +269,7 @@ def train_with_kfold(config: dict, model_class, model_name: str):
                 patience_counter = 0
                 # Save best model
                 torch.save(model.state_dict(), 
-                          f'/home/ubuntu/ecg_snn_project/models/{model_name}_fold{fold}_best.pth')
+                          f'./models/{model_name}_fold{fold}_best.pth')
             else:
                 patience_counter += 1
                 if patience_counter >= config['training']['early_stopping_patience']:
@@ -278,7 +278,7 @@ def train_with_kfold(config: dict, model_class, model_name: str):
         
         # Load best model and final evaluation
         model.load_state_dict(torch.load(
-            f'/home/ubuntu/ecg_snn_project/models/{model_name}_fold{fold}_best.pth',
+            f'./models/{model_name}_fold{fold}_best.pth',
             weights_only=True
         ))
         preds, targets, probs = evaluate(model, test_loader, device)
@@ -299,7 +299,7 @@ def train_with_kfold(config: dict, model_class, model_name: str):
 
 def main():
     # Load config
-    config = load_config('/home/ubuntu/ecg_snn_project/config/config.yaml')
+    config = load_config('./config/config.yaml')
     
     print("="*60)
     print("Training Temporal CSNN")

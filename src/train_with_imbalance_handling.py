@@ -5,7 +5,7 @@ Training with strong imbalance handling:
 - SMOTE oversampling
 """
 import sys
-sys.path.insert(0, '/home/ubuntu/ecg_snn_project/src')
+sys.path.insert(0, './src')
 
 import os
 import torch
@@ -172,12 +172,12 @@ def train_model(model_type='snn', fold_idx=0, use_focal=True, use_sampling=True)
         use_sampling: use weighted sampling
     """
     
-    config = load_config('/home/ubuntu/ecg_snn_project/config/config.yaml')
+    config = load_config('./config/config.yaml')
     set_seed(config['experiment']['seed'])
     device = torch.device(config['experiment']['device'])
     
     # Load data
-    data_dir = '/home/ubuntu/ecg_snn_project/data/mitdb'
+    data_dir = './data/mitdb'
     all_records = config['data']['train_records'] + config['data']['test_records']
     existing_records = [r for r in all_records if os.path.exists(os.path.join(data_dir, f"{r}.hea"))]
     
@@ -249,7 +249,7 @@ def train_model(model_type='snn', fold_idx=0, use_focal=True, use_sampling=True)
             best_val_f1 = val_metrics['macro_f1']
             patience_counter = 0
             torch.save(model.state_dict(), 
-                      f'/home/ubuntu/ecg_snn_project/models/{model_type}_imbalanced_fold{fold_idx}.pth')
+                      f'./models/{model_type}_imbalanced_fold{fold_idx}.pth')
         else:
             patience_counter += 1
         
@@ -259,7 +259,7 @@ def train_model(model_type='snn', fold_idx=0, use_focal=True, use_sampling=True)
     
     # Load best model
     model.load_state_dict(torch.load(
-        f'/home/ubuntu/ecg_snn_project/models/{model_type}_imbalanced_fold{fold_idx}.pth',
+        f'./models/{model_type}_imbalanced_fold{fold_idx}.pth',
         weights_only=True
     ))
     

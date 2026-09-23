@@ -2,7 +2,7 @@
 Improved STDP adaptation with stability constraints.
 """
 import sys
-sys.path.insert(0, '/home/ubuntu/ecg_snn_project/src')
+sys.path.insert(0, './src')
 
 import os
 import torch
@@ -63,12 +63,12 @@ class StableSTDPLearner:
 
 def evaluate_stable_stdp():
     """Evaluate stable STDP adaptation."""
-    config = load_config('/home/ubuntu/ecg_snn_project/config/config.yaml')
+    config = load_config('./config/config.yaml')
     set_seed(config['experiment']['seed'])
     device = torch.device(config['experiment']['device'])
     
     # Load data
-    data_dir = '/home/ubuntu/ecg_snn_project/data/mitdb'
+    data_dir = './data/mitdb'
     all_records = config['data']['train_records'] + config['data']['test_records']
     existing_records = [r for r in all_records if os.path.exists(os.path.join(data_dir, f"{r}.hea"))]
     
@@ -77,7 +77,7 @@ def evaluate_stable_stdp():
     
     # Load base model
     base_model = TemporalCSNN(input_size=config['data']['window_size']).to(device)
-    model_path = '/home/ubuntu/ecg_snn_project/models/temporal_csnn_v2_fold0_best.pth'
+    model_path = './models/temporal_csnn_v2_fold0_best.pth'
     if os.path.exists(model_path):
         base_model.load_state_dict(torch.load(model_path, weights_only=True))
         print("Loaded base model")
@@ -233,7 +233,7 @@ def evaluate_stable_stdp():
         axes[1].set_ylim(0, 1.1)
         
         plt.tight_layout()
-        plt.savefig('/home/ubuntu/ecg_snn_project/results/stdp_stable.png', dpi=150)
+        plt.savefig('./results/stdp_stable.png', dpi=150)
         print("\nSaved to results/stdp_stable.png")
     
     return results

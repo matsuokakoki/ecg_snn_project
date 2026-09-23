@@ -3,7 +3,7 @@ Visualization of LIF neuron behavior and spike encoding.
 Includes ISI analysis and temporal coding visualization.
 """
 import sys
-sys.path.insert(0, '/home/ubuntu/ecg_snn_project/src')
+sys.path.insert(0, './src')
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -67,7 +67,7 @@ def visualize_lif_dynamics():
         axes[idx, 1].set_ylim(0, 1)
     
     plt.tight_layout()
-    plt.savefig('/home/ubuntu/ecg_snn_project/results/lif_dynamics.png', dpi=150)
+    plt.savefig('./results/lif_dynamics.png', dpi=150)
     print("Saved: results/lif_dynamics.png")
 
 
@@ -76,7 +76,7 @@ def visualize_ecg_encoding():
     print("Visualizing ECG encoding...")
     
     # Load sample ECG
-    record = wfdb.rdrecord('/home/ubuntu/ecg_snn_project/data/mitdb/100')
+    record = wfdb.rdrecord('./data/mitdb/100')
     signal = record.p_signal[:3600, 0]  # 10 seconds
     fs = record.fs
     
@@ -111,7 +111,7 @@ def visualize_ecg_encoding():
     
     axes[-1].set_xlabel('Time (s)')
     plt.tight_layout()
-    plt.savefig('/home/ubuntu/ecg_snn_project/results/ecg_encoding_comparison.png', dpi=150)
+    plt.savefig('./results/ecg_encoding_comparison.png', dpi=150)
     print("Saved: results/ecg_encoding_comparison.png")
 
 
@@ -120,7 +120,7 @@ def visualize_isi_distribution():
     print("Visualizing ISI distribution...")
     
     # Load ECG and encode
-    record = wfdb.rdrecord('/home/ubuntu/ecg_snn_project/data/mitdb/100')
+    record = wfdb.rdrecord('./data/mitdb/100')
     signal = record.p_signal[:36000, 0]  # 100 seconds for better statistics
     fs = record.fs
     
@@ -182,7 +182,7 @@ def visualize_isi_distribution():
     axes[1, 1].legend(loc='upper left')
     
     plt.tight_layout()
-    plt.savefig('/home/ubuntu/ecg_snn_project/results/isi_distribution.png', dpi=150)
+    plt.savefig('./results/isi_distribution.png', dpi=150)
     print("Saved: results/isi_distribution.png")
 
 
@@ -194,7 +194,7 @@ def visualize_firing_rate_per_beat():
     
     encoder = GradedDeltaEncoder(num_levels=3, threshold_factor=0.5)
     dataset = MITBIHDataset(
-        '/home/ubuntu/ecg_snn_project/data/mitdb',
+        './data/mitdb',
         ['100', '101'],
         encoder=encoder
     )
@@ -228,7 +228,7 @@ def visualize_firing_rate_per_beat():
     axes[1].set_title('Firing Rate Comparison')
     
     plt.tight_layout()
-    plt.savefig('/home/ubuntu/ecg_snn_project/results/firing_rate_per_beat.png', dpi=150)
+    plt.savefig('./results/firing_rate_per_beat.png', dpi=150)
     print("Saved: results/firing_rate_per_beat.png")
     
     print(f"\nFiring Rate Statistics:")

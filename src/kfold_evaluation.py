@@ -3,7 +3,7 @@ K-fold cross-validation evaluation with mean ± std reporting.
 This is the REQUIRED evaluation protocol for the final report.
 """
 import sys
-sys.path.insert(0, '/home/ubuntu/ecg_snn_project/src')
+sys.path.insert(0, './src')
 
 import os
 import torch
@@ -33,11 +33,11 @@ def evaluate_kfold(model_type='snn', n_folds=5, model_path_template=None):
         summary_stats: Dict with mean ± std for each metric
     """
     
-    config = load_config('/home/ubuntu/ecg_snn_project/config/config.yaml')
+    config = load_config('./config/config.yaml')
     device = torch.device(config['experiment']['device'])
     
     # Load data
-    data_dir = '/home/ubuntu/ecg_snn_project/data/mitdb'
+    data_dir = './data/mitdb'
     all_records = config['data']['train_records'] + config['data']['test_records']
     existing_records = [r for r in all_records if os.path.exists(os.path.join(data_dir, f"{r}.hea"))]
     
@@ -67,7 +67,7 @@ def evaluate_kfold(model_type='snn', n_folds=5, model_path_template=None):
         if model_path_template:
             model_path = model_path_template.format(fold=fold_idx)
         else:
-            model_path = f'/home/ubuntu/ecg_snn_project/models/{model_type}_optimized_fold{fold_idx}.pth'
+            model_path = f'./models/{model_type}_optimized_fold{fold_idx}.pth'
         
         if not os.path.exists(model_path):
             print(f"  Model not found: {model_path}")
@@ -257,13 +257,13 @@ if __name__ == "__main__":
     
     # Plot results
     plot_kfold_results(snn_results, cnn_results, 
-                      '/home/ubuntu/ecg_snn_project/results/kfold_comparison.png')
+                      './results/kfold_comparison.png')
     
     # Save results to CSV
-    snn_results.to_csv('/home/ubuntu/ecg_snn_project/results/snn_kfold_results.csv', index=False)
-    cnn_results.to_csv('/home/ubuntu/ecg_snn_project/results/cnn_kfold_results.csv', index=False)
+    snn_results.to_csv('./results/snn_kfold_results.csv', index=False)
+    cnn_results.to_csv('./results/cnn_kfold_results.csv', index=False)
     
     print("\nResults saved to:")
-    print("  - /home/ubuntu/ecg_snn_project/results/snn_kfold_results.csv")
-    print("  - /home/ubuntu/ecg_snn_project/results/cnn_kfold_results.csv")
-    print("  - /home/ubuntu/ecg_snn_project/results/kfold_comparison.png")
+    print("  - ./results/snn_kfold_results.csv")
+    print("  - ./results/cnn_kfold_results.csv")
+    print("  - ./results/kfold_comparison.png")

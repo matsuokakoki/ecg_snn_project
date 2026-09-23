@@ -3,7 +3,7 @@ Detailed SOPs analysis with layer-by-layer breakdown and comparison with CNN FLO
 Goal: Demonstrate SOPs/FLOPs <= 1 for power efficiency claim.
 """
 import sys
-sys.path.insert(0, '/home/ubuntu/ecg_snn_project/src')
+sys.path.insert(0, './src')
 
 import torch
 import numpy as np
@@ -210,12 +210,12 @@ def plot_sops_analysis(snn_sops, snn_spike_rates, cnn_flops, output_path):
 
 
 if __name__ == "__main__":
-    config = load_config('/home/ubuntu/ecg_snn_project/config/config.yaml')
+    config = load_config('./config/config.yaml')
     set_seed(42)
     device = torch.device(config['experiment']['device'])
     
     # Load data
-    data_dir = '/home/ubuntu/ecg_snn_project/data/mitdb'
+    data_dir = './data/mitdb'
     all_records = config['data']['train_records'] + config['data']['test_records']
     import os
     existing_records = [r for r in all_records if os.path.exists(os.path.join(data_dir, f"{r}.hea"))]
@@ -233,7 +233,7 @@ if __name__ == "__main__":
     # Load SNN
     snn = TemporalCSNN(input_size=360).to(device)
     snn.load_state_dict(torch.load(
-        '/home/ubuntu/ecg_snn_project/models/snn_stable_fold0.pth',
+        './models/snn_stable_fold0.pth',
         weights_only=True
     ))
     
@@ -285,6 +285,6 @@ if __name__ == "__main__":
     
     # Plot
     plot_sops_analysis(snn_sops, snn_spike_rates, cnn_flops,
-                      '/home/ubuntu/ecg_snn_project/results/sops_detailed_analysis.png')
+                      './results/sops_detailed_analysis.png')
     
-    print("\nResults saved to: /home/ubuntu/ecg_snn_project/results/sops_detailed_analysis.png")
+    print("\nResults saved to: ./results/sops_detailed_analysis.png")

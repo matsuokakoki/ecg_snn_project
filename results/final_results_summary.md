@@ -1,3 +1,5 @@
+> **HISTORICAL FOLD 0 VALIDATION SNAPSHOT (2026-09-23):** 数値はCSVと整合しますが、同じvalidationで閾値を選択・評価しています。独立test性能や修正後プロトコルの結果ではありません。詳細は [results/README.md](README.md) を参照してください。
+
 # 研究成果サマリー
 
 **作成日:** 2026年1月7日

@@ -3,7 +3,7 @@ Improved CNN baseline training with proper hyperparameter tuning.
 Goal: Achieve Acc >= 0.90 for fair comparison.
 """
 import sys
-sys.path.insert(0, '/home/ubuntu/ecg_snn_project/src')
+sys.path.insert(0, './src')
 
 import os
 import torch
@@ -132,8 +132,8 @@ def train_with_config(lr, weight_decay, batch_size, seed, fold_idx=0):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     
     # Load data
-    config = load_config('/home/ubuntu/ecg_snn_project/config/config.yaml')
-    data_dir = '/home/ubuntu/ecg_snn_project/data/mitdb'
+    config = load_config('./config/config.yaml')
+    data_dir = './data/mitdb'
     all_records = config['data']['train_records'] + config['data']['test_records']
     existing_records = [r for r in all_records if os.path.exists(os.path.join(data_dir, f"{r}.hea"))]
     
@@ -186,7 +186,7 @@ def train_with_config(lr, weight_decay, batch_size, seed, fold_idx=0):
             patience_counter = 0
             # Save best model
             torch.save(model.state_dict(), 
-                      f'/home/ubuntu/ecg_snn_project/models/improved_cnn_fold{fold_idx}_seed{seed}.pth')
+                      f'./models/improved_cnn_fold{fold_idx}_seed{seed}.pth')
         else:
             patience_counter += 1
         
@@ -196,7 +196,7 @@ def train_with_config(lr, weight_decay, batch_size, seed, fold_idx=0):
     
     # Load best model and evaluate
     model.load_state_dict(torch.load(
-        f'/home/ubuntu/ecg_snn_project/models/improved_cnn_fold{fold_idx}_seed{seed}.pth',
+        f'./models/improved_cnn_fold{fold_idx}_seed{seed}.pth',
         weights_only=True
     ))
     

@@ -3,7 +3,7 @@ Generate all available outputs based on trained models.
 Priority: ① Core evaluation data, ② Sensitivity achievement proof, ③ CNN comparison
 """
 import sys
-sys.path.insert(0, '/home/ubuntu/ecg_snn_project/src')
+sys.path.insert(0, './src')
 
 import os
 import torch
@@ -25,12 +25,12 @@ plt.rcParams['axes.unicode_minus'] = False
 
 def load_models_and_data():
     """Load models and validation data."""
-    config = load_config('/home/ubuntu/ecg_snn_project/config/config.yaml')
+    config = load_config('./config/config.yaml')
     set_seed(42)
     device = torch.device(config['experiment']['device'])
     
     # Load data
-    data_dir = '/home/ubuntu/ecg_snn_project/data/mitdb'
+    data_dir = './data/mitdb'
     all_records = config['data']['train_records'] + config['data']['test_records']
     existing_records = [r for r in all_records if os.path.exists(os.path.join(data_dir, f"{r}.hea"))]
     
@@ -47,7 +47,7 @@ def load_models_and_data():
     
     # Load SNN
     snn = TemporalCSNN(input_size=360).to(device)
-    snn_path = '/home/ubuntu/ecg_snn_project/models/snn_stable_fold0.pth'
+    snn_path = './models/snn_stable_fold0.pth'
     
     # Load with strict=False to ignore missing keys
     snn_state = torch.load(snn_path, weights_only=True)
@@ -55,7 +55,7 @@ def load_models_and_data():
     
     # Load CNN
     cnn = ImprovedCNN(input_size=360).to(device)
-    cnn_path = '/home/ubuntu/ecg_snn_project/models/cnn_optimized_fold0.pth'
+    cnn_path = './models/cnn_optimized_fold0.pth'
     cnn.load_state_dict(torch.load(cnn_path, weights_only=True))
     
     return snn, cnn, val_loader, device
@@ -268,7 +268,7 @@ def generate_cnn_comparison(results, output_dir):
 
 
 if __name__ == "__main__":
-    output_dir = '/home/ubuntu/ecg_snn_project/results'
+    output_dir = './results'
     os.makedirs(output_dir, exist_ok=True)
     
     print("="*70)

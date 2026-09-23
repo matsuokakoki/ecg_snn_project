@@ -2,7 +2,7 @@
 Improved training script for ECG classification with SNN and CNN.
 """
 import sys
-sys.path.insert(0, '/home/ubuntu/ecg_snn_project/src')
+sys.path.insert(0, './src')
 
 import os
 import torch
@@ -80,7 +80,7 @@ def train_model(model_class, model_name, dataset, config, is_snn=False):
     device = torch.device(config['experiment']['device'])
     
     logger = ExperimentLogger(
-        '/home/ubuntu/ecg_snn_project/logs',
+        './logs',
         f"{config['experiment']['name']}_{model_name}"
     )
     logger.log_config(config)
@@ -135,7 +135,7 @@ def train_model(model_class, model_name, dataset, config, is_snn=False):
             if metrics['macro_f1'] > best_f1:
                 best_f1 = metrics['macro_f1']
                 patience_counter = 0
-                torch.save(model.state_dict(), f'/home/ubuntu/ecg_snn_project/models/{model_name}_fold{fold}_best.pth')
+                torch.save(model.state_dict(), f'./models/{model_name}_fold{fold}_best.pth')
             else:
                 patience_counter += 1
                 if patience_counter >= config['training']['early_stopping_patience']:
@@ -143,7 +143,7 @@ def train_model(model_class, model_name, dataset, config, is_snn=False):
                     break
         
         # Final evaluation
-        model.load_state_dict(torch.load(f'/home/ubuntu/ecg_snn_project/models/{model_name}_fold{fold}_best.pth', weights_only=True))
+        model.load_state_dict(torch.load(f'./models/{model_name}_fold{fold}_best.pth', weights_only=True))
         preds, targets, probs = evaluate(model, test_loader, device, is_snn=is_snn)
         final_metrics = MetricsCalculator.calculate_all(targets, preds, probs)
         
@@ -159,10 +159,10 @@ def train_model(model_class, model_name, dataset, config, is_snn=False):
 
 
 def main():
-    config = load_config('/home/ubuntu/ecg_snn_project/config/config.yaml')
+    config = load_config('./config/config.yaml')
     
     # Prepare data
-    data_dir = '/home/ubuntu/ecg_snn_project/data/mitdb'
+    data_dir = './data/mitdb'
     all_records = config['data']['train_records'] + config['data']['test_records']
     existing_records = [r for r in all_records if os.path.exists(os.path.join(data_dir, f"{r}.hea"))]
     
@@ -219,7 +219,7 @@ def main():
     ax.legend()
     ax.set_ylim(0, 1.1)
     plt.tight_layout()
-    plt.savefig('/home/ubuntu/ecg_snn_project/results/model_comparison.png', dpi=150)
+    plt.savefig('./results/model_comparison.png', dpi=150)
     print("\nSaved comparison plot to results/model_comparison.png")
 
 
