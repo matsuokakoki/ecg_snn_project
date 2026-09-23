@@ -58,4 +58,4 @@ python -m compileall -q src tests
 - 目標はSensitivity ≥ 0.80、Specificity ≥ 0.90、Macro F1 ≥ 0.75。既存結果は同時に達成していません。
 - `data_loader.py`は注釈symbolが正常集合以外なら異常にする簡略化した二値分類です。非beat注釈の扱いも再検証が必要です。
 - 公開レポートには`Manus AI`作成の表記があります。AIが生成した文章を実験実施の証拠とは扱わず、本人が再検証した範囲だけを確定結果とします。
-- [MIT-BIH Arrhythmia Database](https://physionet.org/content/mitdb/1.0.0/)はPhysioNetによるOpen Data Commons Attribution License v1.0。元データの利用・再配布条件を遵守してください。`models/`の学習済み重み、生成図の出典・再配布可否は **NEEDS MANUAL RIGHTS CHECK**。医療機器としての利用を想定した性能・省電力性は検証されていません。
+- [MIT-BIH Arrhythmia Database](https://physionet.org/content/mitdb/1.0.0/)はPhysioNetによるOpen Data Commons Attribution License v1.0です。元データの利用・再配布時は同ライセンスに従ってください。医療機器としての利用を想定した性能・省電力性は検証されていません。
